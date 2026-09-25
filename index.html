@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoFácil - Dashboard</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    :root {
+      --bg-color: #080c11;
+      --card-bg: #0f1622;
+      --card-border: #1a2433;
+      --accent-yellow: #ffb800;
+      --accent-green: #00e676;
+      --text-main: #ffffff;
+      --text-sub: #8e9bb0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000000;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 414px;
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    header {
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--bg-color);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      color: var(--accent-yellow);
+      font-size: 2.2rem;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-title span {
+      color: var(--accent-yellow);
+    }
+
+    .logo-sub {
+      font-size: 0.55rem;
+      color: #cccccc;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .icon-btn {
+      font-size: 1.5rem;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .icon-btn .badge-dot {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 8px;
+      height: 8px;
+      background-color: #ff3b30;
+      border-radius: 50%;
+    }
+
+    /* Tab views */
+    .tab-view {
+      display: none;
+      padding: 12px 16px;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tab-view.active {
+      display: flex;
+    }
+
+    /* Card Contrato */
+    .card-contract {
+      border: 1px solid var(--accent-yellow);
+      border-radius: 18px;
+      padding: 16px;
+      background: linear-gradient(135deg, #0f1622 0%, #151d2a 45%, #4a3800 100%);
+      position: relative;
+      overflow: hidden;
+      min-height: 165px;
+    }
+
+    .card-contract::before {
+      content: '';
+      position: absolute;
+      right: -25px;
+      top: -20px;
+      width: 165px;
+      height: 200px;
+      background: linear-gradient(115deg, transparent 40%, rgba(255, 184, 0, 0.85) 40%, rgba(255, 184, 0, 0.85) 70%, transparent 70%);
+      opacity: 0.85;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .moto-img {
+      position: absolute;
+      right: -5px;
+      bottom: 8px;
+      width: 165px;
+      z-index: 2;
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.8));
+      pointer-events: none;
+    }
+
+    .badge-contract {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background-color: #000000;
+      border-radius: 12px;
+      padding: 6px 10px;
+      text-align: center;
+      z-index: 4;
+    }
+
+    .badge-contract .num {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+      line-height: 1;
+    }
+
+    .badge-contract .label {
+      font-size: 0.55rem;
+      color: var(--text-sub);
+      display: block;
+      margin-top: 2px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--accent-yellow);
+      font-size: 1.2rem;
+    }
+
+    .user-details .role {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      display: block;
+    }
+
+    .user-details .name {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .vehicle-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 175px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .v-box {
+      background: rgba(10, 15, 23, 0.85);
+      backdrop-filter: blur(4px);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border-left: 3px solid var(--accent-yellow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .v-box i {
+      color: var(--accent-yellow);
+      font-size: 1.1rem;
+    }
+
+    .v-box-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .v-box .lbl {
+      font-size: 0.58rem;
+      color: var(--text-sub);
+    }
+
+    .v-box .val {
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Card Pagamento */
+    .card-payment-status {
+      background-color: var(--card-bg);
+      border: 1px solid var(--accent-green);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pay-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .days-left-box {
+      border-right: 1px solid rgba(255,255,255,0.08);
+      padding-right: 10px;
+    }
+
+    .days-title {
+      color: var(--accent-green);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .days-count {
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin: 4px 0;
+    }
+
+    .days-count span {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .days-sub {
+      font-size: 0.65rem;
+      color: var(--accent-green);
+    }
+
+    .progress-bar-bg {
+      height: 8px;
+      background: #182232;
+      border-radius: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 71%; /* 5 de 7 dias restantes */
+      background: var(--accent-green);
+      border-radius: 4px;
+    }
+
+    .amount-box {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-left: 10px;
+    }
+
+    .amount-icon {
+      color: var(--accent-yellow);
+      font-size: 2rem;
+      margin-bottom: 2px;
+    }
+
+    .amount-title {
+      font-size: 0.7rem;
+      color: var(--text-sub);
+    }
+
+    .amount-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .btn-pay {
+      background-color: var(--accent-yellow);
+      color: #000;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px 6px;
+    }
+
+    .sum-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .sum-item:not(:last-child) {
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sum-icon {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .sum-icon.green { color: var(--accent-green); }
+    .sum-icon.yellow { color: var(--accent-yellow); }
+
+    .sum-label {
+      font-size: 0.6rem;
+      color: var(--text-sub);
+    }
+
+    .sum-value {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    /* Rules Card */
+    .card-rules {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .rules-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-yellow);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .rule-item {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .rule-icon {
+      color: var(--accent-yellow);
+      font-size: 1.2rem;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .rule-text h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .rule-text p {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    /* Estilos da Aba de Manutenção */
+    .card-maintenance {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .maint-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+    }
+
+    .maint-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-yellow);
+    }
+
+    .km-badge {
+      background: rgba(255, 184, 0, 0.15);
+      color: var(--accent-yellow);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .km-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .km-stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .km-stat-card .lbl {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+    }
+
+    .km-stat-card .val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .oil-progress-box {
+      background: rgba(0,0,0,0.3);
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 3px solid var(--accent-yellow);
+    }
+
+    .oil-progress-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .oil-bar-bg {
+      height: 10px;
+      background: #182232;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .oil-bar-fill {
+      height: 100%;
+      width: 60%; /* 600km rodados de 1000km */
+      background: linear-gradient(90deg, var(--accent-yellow), #ff9100);
+      border-radius: 5px;
+    }
+
+    /* Tabela de Pagamentos na Aba Pagamentos */
+    .payment-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pay-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+    }
+
+    .pay-item .status-badge {
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .status-badge.pending {
+      background: rgba(255, 184, 0, 0.2);
+      color: var(--accent-yellow);
+    }
+
+    /* Details Button */
+    .btn-details {
+      background-color: var(--accent-yellow);
+      color: #000;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 25px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .footer-text {
+      text-align: center;
+      font-size: 0.6rem;
+      color: var(--text-sub);
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 414px;
+      height: 60px;
+      background-color: #080d14;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-sub);
+      font-size: 0.6rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-item i {
+      font-size: 1.2rem;
+    }
+
+    .nav-item.active {
+      color: var(--accent-yellow);
+    }
+
+    .nav-item.active::after {
+      content: '';
+      width: 16px;
+      height: 2px;
+      background-color: var(--accent-yellow);
+      margin-top: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <i class="ph ph-list icon-btn"></i>
+      <div class="logo-container">
+        <i class="ph ph-motorbike logo-icon"></i>
+        <div class="logo-text">
+          <div class="logo-title">Moto<span>Fácil</span></div>
+          <div class="logo-sub">LOCADORA DE MOTOS</div>
+        </div>
+      </div>
+      <div class="icon-btn">
+        <i class="ph ph-bell"></i>
+        <div class="badge-dot"></div>
+      </div>
+    </header>
+
+    <!-- TAB 1: INÍCIO -->
+    <main id="tab-inicio" class="tab-view active">
+      <div class="card-contract">
+        <img class="moto-img" src="img_honda.png" alt="Honda CG 160 Start" />
+
+        <div class="badge-contract">
+          <span class="num">1/12</span>
+          <span class="label">Contrato</span>
+        </div>
+
+        <div class="user-info">
+          <div class="avatar">
+            <i class="ph ph-user"></i>
+          </div>
+          <div class="user-details">
+            <span class="role">Locatário</span>
+            <div class="name">Carlos Eduardo Silva</div>
+          </div>
+        </div>
+
+        <div class="vehicle-details">
+          <div class="v-box">
+            <i class="ph ph-motorbike"></i>
+            <div class="v-box-content">
+              <span class="lbl">Veículo</span>
+              <span class="val">HONDA CG 160 START</span>
+            </div>
+          </div>
+          <div class="v-box">
+            <i class="ph ph-cardholder"></i>
+            <div class="v-box-content">
+              <span class="lbl">Placa</span>
+              <span class="val">PTM - 3F56</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-payment-status">
+        <div class="pay-grid">
+          <div class="days-left-box">
+            <div class="days-title">Faltam</div>
+            <div class="days-count">5 <span>Dias</span></div>
+            <div class="days-sub">Vencimento: 30/09/2026</div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <div class="amount-box">
+            <i class="ph ph-coins amount-icon"></i>
+            <span class="amount-title">1ª Parcela Semanal</span>
+            <span class="amount-val">R$ 320,00</span>
+            <span style="font-size: 0.6rem; color: var(--text-sub);">Valor do pagamento</span>
+          </div>
+        </div>
+
+        <button class="btn-pay">
+          <i class="ph ph-credit-card"></i>
+          Realizar Pagamento
+        </button>
+      </div>
+
+      <div class="summary-grid">
+        <div class="sum-item">
+          <i class="ph ph-check-circle sum-icon green"></i>
+          <span class="sum-label">Dias de atraso</span>
+          <span class="sum-value">0</span>
+        </div>
+        <div class="sum-item">
+          <i class="ph ph-currency-circle-dollar sum-icon yellow"></i>
+          <span class="sum-label">Multa por atraso</span>
+          <span class="sum-value">R$ 0,00</span>
+        </div>
+        <div class="sum-item">
+          <i class="ph ph-calendar-blank sum-icon yellow"></i>
+          <span class="sum-label">Total a pagar</span>
+          <span class="sum-value" style="color: var(--accent-yellow);">R$ 320,00</span>
+        </div>
+      </div>
+
+      <div class="card-rules">
+        <div class="rules-header">
+          <i class="ph ph-info"></i>
+          <span>Regras do Contrato (Assinado em 23/09/2026)</span>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-shield-check rule-icon"></i>
+          <div class="rule-text">
+            <h4>Caução Retida: R$ 700,00</h4>
+            <p>Retida até o término do contrato. Devolução após 30 dias (15/01/2027) com dedução de eventuais multas de trânsito ou avarias por mau uso.</p>
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-calendar-blank rule-icon"></i>
+          <div class="rule-text">
+            <h4>Pagamento semanal (12 Semanas)</h4>
+            <p>O valor do aluguel é de R$ 320,00 com vencimento a cada 7 dias (todas as quartas-feiras).</p>
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-warning-triangle rule-icon"></i>
+          <div class="rule-text">
+            <h4>Multa por atraso</h4>
+            <p>Cobrança de R$ 20,00 por dia de atraso até o 3º dia.</p>
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-truck rule-icon"></i>
+          <div class="rule-text">
+            <h4>Recolhimento no 4º dia</h4>
+            <p>No 4º dia de inadimplência, a moto deverá ser devolvida ou será recolhida imediatamente.</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-details" onclick="switchTab('tab-moto')">
+        <i class="ph ph-wrench"></i>
+        Ver Próxima Manutenção
+        <i class="ph ph-caret-right"></i>
+      </button>
+
+      <div class="footer-text">
+        MotoFácil • Sua liberdade sobre duas rodas!
+      </div>
+    </main>
+
+    <!-- TAB 2: PAGAMENTOS -->
+    <main id="tab-pagamentos" class="tab-view">
+      <div class="card-rules">
+        <div class="rules-header">
+          <i class="ph ph-receipt"></i>
+          <span>Cronograma de 12 Parcelas</span>
+        </div>
+        <div class="payment-history-list">
+          <div class="pay-item">
+            <div><strong>1ª Sem.</strong> - 30/09/2026</div>
+            <span class="status-badge pending">A Vencer (R$ 320)</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>2ª Sem.</strong> - 07/10/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>3ª Sem.</strong> - 14/10/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>4ª Sem.</strong> - 21/10/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>5ª Sem.</strong> - 28/10/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>6ª Sem.</strong> - 04/11/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>7ª Sem.</strong> - 11/11/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>8ª Sem.</strong> - 18/11/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>9ª Sem.</strong> - 25/11/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>10ª Sem.</strong> - 02/12/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>11ª Sem.</strong> - 09/12/2026</div>
+            <span class="status-badge">R$ 320,00</span>
+          </div>
+          <div class="pay-item">
+            <div><strong>12ª Sem.</strong> - 16/12/2026</div>
+            <span class="status-badge">Término do Aluguel</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 3: MINHA MOTO / MANUTENÇÃO -->
+    <main id="tab-moto" class="tab-view">
+      <div class="card-maintenance">
+        <div class="maint-header">
+          <div class="maint-title">
+            <i class="ph ph-drop"></i>
+            <span>Troca de Óleo</span>
+          </div>
+          <span class="km-badge">A cada 1.000 km</span>
+        </div>
+
+        <div class="km-stats-grid">
+          <div class="km-stat-card">
+            <span class="lbl">Hodômetro Inicial</span>
+            <span class="val">175.325 km</span>
+          </div>
+          <div class="km-stat-card">
+            <span class="lbl">Hodômetro Atual</span>
+            <span class="val" style="color: var(--accent-yellow);">175.925 km</span>
+          </div>
+        </div>
+
+        <div class="oil-progress-box">
+          <div class="oil-progress-head">
+            <span>Quilometragem Rodada</span>
+            <span style="color: var(--accent-yellow);">600 / 1.000 km</span>
+          </div>
+          <div class="oil-bar-bg">
+            <div class="oil-bar-fill"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-sub); margin-top: 6px;">
+            <span>Faltam <strong>400 km</strong> para a próxima troca</span>
+            <span>Próxima: <strong>176.325 km</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-rules">
+        <div class="rules-header">
+          <i class="ph ph-wrench"></i>
+          <span>Orientações de Manutenção</span>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-check-circle rule-icon"></i>
+          <div class="rule-text">
+            <h4>Nível do Óleo</h4>
+            <p>Verifique o nível do óleo semanalmente na vareta com a moto em piso plano.</p>
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-warning-triangle rule-icon"></i>
+          <div class="rule-text">
+            <h4>Calibragem dos Pneus</h4>
+            <p>Mantenha a calibragem recomendada (25 PSI dianteiro / 29 PSI traseiro) a cada 7 dias.</p>
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-clock rule-icon"></i>
+          <div class="rule-text">
+            <h4>Agendamento de Troca</h4>
+            <p>Ao atingir 900 km rodados, entre em contacto com a locadora para agendar a troca de óleo sem custo adicional.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB 4: PERFIL -->
+    <main id="tab-perfil" class="tab-view">
+      <div class="card-rules">
+        <div class="rules-header">
+          <i class="ph ph-user-circle"></i>
+          <span>Dados do Locatário</span>
+        </div>
+        <div style="font-size: 0.8rem; line-height: 1.6; color: var(--text-sub);">
+          <p><strong style="color: #fff;">Nome:</strong> Carlos Eduardo Silva</p>
+          <p><strong style="color: #fff;">Veículo:</strong> HONDA CG 160 START</p>
+          <p><strong style="color: #fff;">Placa:</strong> PTM - 3F56</p>
+          <p><strong style="color: #fff;">Assinatura:</strong> 23/09/2026</p>
+          <p><strong style="color: #fff;">Término do Contrato:</strong> 16/12/2026</p>
+          <p><strong style="color: #fff;">Devolução da Caução:</strong> 15/01/2027</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Navigation Bar -->
+    <nav class="bottom-nav">
+      <a class="nav-item active" onclick="switchTab('tab-inicio', this)">
+        <i class="ph ph-house"></i>
+        <span>Início</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('tab-pagamentos', this)">
+        <i class="ph ph-receipt"></i>
+        <span>Pagamentos</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('tab-moto', this)">
+        <i class="ph ph-wrench"></i>
+        <span>Minha Moto</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('tab-perfil', this)">
+        <i class="ph ph-user-circle"></i>
+        <span>Perfil</span>
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.tab-view').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+
+      if (element) {
+        element.classList.add('active');
+      } else {
+        // Se for acionado via botão interno
+        const navIndex = { 'tab-inicio': 0, 'tab-pagamentos': 1, 'tab-moto': 2, 'tab-perfil': 3 };
+        document.querySelectorAll('.nav-item')[navIndex[tabId]].classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
