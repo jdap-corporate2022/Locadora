@@ -122,30 +122,31 @@
       background: linear-gradient(135deg, #0f1622 0%, #151d2a 45%, #4a3800 100%);
       position: relative;
       overflow: hidden;
-      min-height: 170px;
+      min-height: 165px;
     }
 
     /* Pattern/Graphics on background */
     .card-contract::before {
       content: '';
       position: absolute;
-      right: -20px;
+      right: -25px;
       top: -20px;
-      width: 180px;
+      width: 165px;
       height: 200px;
-      background: linear-gradient(115deg, transparent 40%, rgba(255, 184, 0, 0.8) 40%, rgba(255, 184, 0, 0.8) 70%, transparent 70%);
-      opacity: 0.8;
+      background: linear-gradient(115deg, transparent 40%, rgba(255, 184, 0, 0.85) 40%, rgba(255, 184, 0, 0.85) 70%, transparent 70%);
+      opacity: 0.85;
       z-index: 1;
       pointer-events: none;
     }
 
+    /* Ajuste de tamanho e posição da Moto */
     .moto-img {
       position: absolute;
-      right: -10px;
-      bottom: 5px;
-      width: 210px;
+      right: -5px;
+      bottom: 8px;
+      width: 165px; /* Reduzido de 210px para 165px */
       z-index: 2;
-      filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.7));
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.8));
       pointer-events: none;
     }
 
@@ -155,13 +156,13 @@
       right: 12px;
       background-color: #000000;
       border-radius: 12px;
-      padding: 6px 12px;
+      padding: 6px 10px;
       text-align: center;
-      z-index: 3;
+      z-index: 4;
     }
 
     .badge-contract .num {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 800;
       color: #fff;
       display: block;
@@ -185,8 +186,8 @@
     }
 
     .avatar {
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       border: 2px solid var(--accent-yellow);
       display: flex;
@@ -194,31 +195,32 @@
       justify-content: center;
       background: rgba(0, 0, 0, 0.4);
       color: var(--accent-yellow);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .user-details .role {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--text-sub);
       display: block;
     }
 
     .user-details .name {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
     }
 
+    /* Ajuste da largura dos cards de Veículo e Placa */
     .vehicle-details {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      width: 55%;
+      max-width: 175px; /* Evita invadir a imagem da moto */
       position: relative;
       z-index: 3;
     }
 
     .v-box {
-      background: rgba(10, 15, 23, 0.75);
+      background: rgba(10, 15, 23, 0.85);
       backdrop-filter: blur(4px);
       padding: 6px 10px;
       border-radius: 8px;
@@ -230,7 +232,7 @@
 
     .v-box i {
       color: var(--accent-yellow);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .v-box-content {
@@ -239,12 +241,12 @@
     }
 
     .v-box .lbl {
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       color: var(--text-sub);
     }
 
     .v-box .val {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       white-space: nowrap;
     }
@@ -525,7 +527,6 @@
     <main>
       <!-- Top Contract Card with Motorcycle Overlay -->
       <div class="card-contract">
-        <!-- Imagem da Moto vinculada ao arquivo local do GitHub -->
         <img class="moto-img" src="img_honda.png" alt="Honda CG 160 Start" />
 
         <div class="badge-contract">
