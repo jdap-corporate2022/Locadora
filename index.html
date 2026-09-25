@@ -4,28 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MotoFácil - Dashboard</title>
-  <!-- Ícones Phosphor Icons para um aspeto moderno -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <style>
     :root {
-      --bg-color: #0b1117;
-      --card-bg: #111823;
-      --card-border: #1e293b;
+      --bg-color: #080c11;
+      --card-bg: #0f1622;
+      --card-border: #1a2433;
       --accent-yellow: #ffb800;
       --accent-green: #00e676;
       --text-main: #ffffff;
-      --text-sub: #94a3b8;
+      --text-sub: #8e9bb0;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      background-color: #05080c;
+      background-color: #000000;
       color: var(--text-main);
       display: flex;
       justify-content: center;
@@ -33,7 +32,6 @@
       min-height: 100vh;
     }
 
-    /* Contentor estilo Smartphone */
     .app-container {
       width: 100%;
       max-width: 414px;
@@ -42,17 +40,16 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      box-shadow: 0 0 20px rgba(0,0,0,0.8);
-      padding-bottom: 70px;
+      padding-bottom: 90px;
     }
 
-    /* Cabeçalho */
+    /* Header */
     header {
       padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(180deg, rgba(17,24,35,0.8) 0%, rgba(11,17,23,1) 100%);
+      background-color: var(--bg-color);
     }
 
     .logo-container {
@@ -61,7 +58,7 @@
       gap: 10px;
     }
 
-    .logo-container i {
+    .logo-icon {
       color: var(--accent-yellow);
       font-size: 2.2rem;
     }
@@ -69,13 +66,15 @@
     .logo-text {
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     .logo-title {
-      font-size: 1.4rem;
-      font-weight: 800;
+      font-size: 1.5rem;
+      font-weight: 900;
       font-style: italic;
       line-height: 1;
+      letter-spacing: -0.5px;
     }
 
     .logo-title span {
@@ -84,9 +83,9 @@
 
     .logo-sub {
       font-size: 0.55rem;
-      color: var(--text-sub);
-      letter-spacing: 1px;
-      font-weight: 600;
+      color: #cccccc;
+      letter-spacing: 1.5px;
+      font-weight: 700;
       margin-top: 2px;
     }
 
@@ -99,159 +98,208 @@
 
     .icon-btn .badge-dot {
       position: absolute;
-      top: 2px;
-      right: 2px;
+      top: 0;
+      right: 0;
       width: 8px;
       height: 8px;
       background-color: #ff3b30;
       border-radius: 50%;
     }
 
-    /* Conteúdo Principal */
+    /* Main Content */
     main {
-      padding: 15px;
+      padding: 12px 16px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 12px;
     }
 
-    /* Cartão do Contrato / Veículo */
+    /* Top Contract Card with Moto Graphic */
     .card-contract {
       border: 1px solid var(--accent-yellow);
-      border-radius: 16px;
-      padding: 15px;
-      background: linear-gradient(135deg, #111823 0%, #1a2332 50%, #3a2e05 100%);
+      border-radius: 18px;
+      padding: 16px;
+      background: linear-gradient(135deg, #0f1622 0%, #151d2a 45%, #4a3800 100%);
       position: relative;
       overflow: hidden;
+      min-height: 170px;
+    }
+
+    /* Pattern/Graphics on background */
+    .card-contract::before {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 180px;
+      height: 200px;
+      background: linear-gradient(115deg, transparent 40%, rgba(255, 184, 0, 0.8) 40%, rgba(255, 184, 0, 0.8) 70%, transparent 70%);
+      opacity: 0.8;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .moto-img {
+      position: absolute;
+      right: -10px;
+      bottom: 5px;
+      width: 220px;
+      z-index: 2;
+      filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.7));
+      pointer-events: none;
     }
 
     .badge-contract {
       position: absolute;
-      top: 15px;
-      right: 15px;
-      background-color: rgba(0, 0, 0, 0.6);
-      border-radius: 10px;
-      padding: 4px 10px;
+      top: 12px;
+      right: 12px;
+      background-color: #000000;
+      border-radius: 12px;
+      padding: 6px 12px;
       text-align: center;
+      z-index: 3;
     }
 
     .badge-contract .num {
       font-size: 1.1rem;
-      font-weight: bold;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+      line-height: 1;
     }
 
     .badge-contract .label {
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       color: var(--text-sub);
       display: block;
+      margin-top: 2px;
     }
 
     .user-info {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 15px;
+      gap: 10px;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 3;
     }
 
     .avatar {
-      width: 45px;
-      height: 45px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       border: 2px solid var(--accent-yellow);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 184, 0, 0.1);
+      background: rgba(0, 0, 0, 0.4);
       color: var(--accent-yellow);
-      font-size: 1.4rem;
+      font-size: 1.3rem;
     }
 
     .user-details .role {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-sub);
+      display: block;
     }
 
     .user-details .name {
-      font-size: 1.1rem;
-      font-weight: bold;
+      font-size: 1.05rem;
+      font-weight: 700;
     }
 
     .vehicle-details {
       display: flex;
       flex-direction: column;
       gap: 8px;
-      width: 60%;
+      width: 55%;
+      position: relative;
+      z-index: 3;
     }
 
     .v-box {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 8px 12px;
+      background: rgba(10, 15, 23, 0.75);
+      backdrop-filter: blur(4px);
+      padding: 6px 10px;
       border-radius: 8px;
       border-left: 3px solid var(--accent-yellow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .v-box i {
+      color: var(--accent-yellow);
+      font-size: 1.2rem;
+    }
+
+    .v-box-content {
+      display: flex;
+      flex-direction: column;
     }
 
     .v-box .lbl {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--text-sub);
-      display: block;
     }
 
     .v-box .val {
-      font-size: 0.85rem;
-      font-weight: bold;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
-    /* Cartão de Vencimento e Pagamento */
+    /* Payment Status Card */
     .card-payment-status {
       background-color: var(--card-bg);
       border: 1px solid var(--accent-green);
       border-radius: 16px;
-      padding: 15px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 14px;
     }
 
     .pay-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
+      gap: 10px;
       align-items: center;
     }
 
     .days-left-box {
-      border-right: 1px solid var(--card-border);
+      border-right: 1px solid rgba(255,255,255,0.08);
       padding-right: 10px;
     }
 
     .days-title {
       color: var(--accent-green);
       font-size: 0.8rem;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .days-count {
-      font-size: 2.2rem;
-      font-weight: 800;
-      line-height: 1.1;
-      margin: 5px 0;
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1;
+      margin: 4px 0;
     }
 
     .days-count span {
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.3rem;
+      font-weight: 700;
     }
 
     .days-sub {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--accent-green);
     }
 
     .progress-bar-bg {
       height: 8px;
-      background: #1e293b;
+      background: #182232;
       border-radius: 4px;
-      margin-top: 10px;
+      margin-top: 8px;
       overflow: hidden;
     }
 
@@ -266,21 +314,22 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      padding-left: 10px;
     }
 
     .amount-icon {
       color: var(--accent-yellow);
-      font-size: 1.8rem;
-      margin-bottom: 4px;
+      font-size: 2rem;
+      margin-bottom: 2px;
     }
 
     .amount-title {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--text-sub);
     }
 
     .amount-val {
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 800;
     }
 
@@ -291,8 +340,8 @@
       width: 100%;
       padding: 12px;
       border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.95rem;
+      font-weight: 800;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -300,15 +349,15 @@
       cursor: pointer;
     }
 
-    /* Grelha de Valores/Atrasos */
+    /* Summary Grid */
     .summary-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
+      gap: 4px;
       background-color: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 12px 8px;
+      padding: 12px 6px;
     }
 
     .sum-item {
@@ -319,11 +368,11 @@
     }
 
     .sum-item:not(:last-child) {
-      border-right: 1px solid var(--card-border);
+      border-right: 1px solid rgba(255,255,255,0.08);
     }
 
     .sum-icon {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       margin-bottom: 4px;
     }
 
@@ -331,58 +380,61 @@
     .sum-icon.yellow { color: var(--accent-yellow); }
 
     .sum-label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--text-sub);
     }
 
     .sum-value {
-      font-size: 0.95rem;
-      font-weight: bold;
+      font-size: 0.9rem;
+      font-weight: 800;
       margin-top: 2px;
     }
 
-    /* Cartão Regras do Contrato */
+    /* Rules Card */
     .card-rules {
       background-color: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 15px;
+      padding: 14px;
     }
 
     .rules-header {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       color: var(--accent-yellow);
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin-bottom: 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
     }
 
     .rule-item {
       display: flex;
-      gap: 12px;
-      padding: 10px 0;
+      gap: 10px;
+      padding: 8px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .rule-icon {
       color: var(--accent-yellow);
       font-size: 1.2rem;
-      margin-top: 2px;
+      margin-top: 1px;
+      flex-shrink: 0;
     }
 
     .rule-text h4 {
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      font-weight: 700;
     }
 
     .rule-text p {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--text-sub);
       margin-top: 2px;
+      line-height: 1.2;
     }
 
+    /* Details Button */
     .btn-details {
       background-color: var(--accent-yellow);
       color: #000;
@@ -390,42 +442,51 @@
       width: 100%;
       padding: 12px;
       border-radius: 25px;
-      font-weight: 700;
-      font-size: 0.85rem;
+      font-weight: 800;
+      font-size: 0.8rem;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       cursor: pointer;
-      margin-top: 5px;
+      margin-top: 4px;
     }
 
-    /* Navegação Inferior */
+    .footer-text {
+      text-align: center;
+      font-size: 0.6rem;
+      color: var(--text-sub);
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    /* Bottom Navigation */
     .bottom-nav {
-      position: absolute;
+      position: fixed;
       bottom: 0;
-      left: 0;
       width: 100%;
-      height: 65px;
-      background-color: var(--card-bg);
+      max-width: 414px;
+      height: 60px;
+      background-color: #080d14;
       border-top: 1px solid var(--card-border);
       display: flex;
       justify-content: space-around;
       align-items: center;
+      z-index: 100;
     }
 
     .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       color: var(--text-sub);
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       text-decoration: none;
     }
 
     .nav-item i {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
 
     .nav-item.active {
@@ -434,29 +495,21 @@
 
     .nav-item.active::after {
       content: '';
-      width: 20px;
+      width: 16px;
       height: 2px;
       background-color: var(--accent-yellow);
-      margin-top: 2px;
-    }
-
-    .footer-text {
-      text-align: center;
-      font-size: 0.65rem;
-      color: var(--text-sub);
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 1px;
     }
   </style>
 </head>
 <body>
 
   <div class="app-container">
-    <!-- Cabeçalho -->
+    <!-- Header -->
     <header>
       <i class="ph ph-list icon-btn"></i>
       <div class="logo-container">
-        <i class="ph ph-motorbike"></i>
+        <i class="ph ph-motorbike logo-icon"></i>
         <div class="logo-text">
           <div class="logo-title">Moto<span>Fácil</span></div>
           <div class="logo-sub">LOCADORA DE MOTOS</div>
@@ -468,10 +521,13 @@
       </div>
     </header>
 
-    <!-- Conteúdo Principal -->
+    <!-- Main Content -->
     <main>
-      <!-- Cartão do Contrato / Cliente -->
+      <!-- Top Contract Card with Motorcycle Overlay -->
       <div class="card-contract">
+        <!-- Rendered Bike Transparent PNG -->
+        <img class="moto-img" src="https://i.imgur.com/3Z8q01k.png" alt="Honda CG 160 Start" />
+
         <div class="badge-contract">
           <span class="num">1/12</span>
           <span class="label">Contrato</span>
@@ -489,17 +545,23 @@
 
         <div class="vehicle-details">
           <div class="v-box">
-            <span class="lbl">Veículo</span>
-            <span class="val">HONDA CG 160 START</span>
+            <i class="ph ph-motorbike"></i>
+            <div class="v-box-content">
+              <span class="lbl">Veículo</span>
+              <span class="val">HONDA CG 160 START</span>
+            </div>
           </div>
           <div class="v-box">
-            <span class="lbl">Placa</span>
-            <span class="val">PTM - 3F56</span>
+            <i class="ph ph-cardholder"></i>
+            <div class="v-box-content">
+              <span class="lbl">Placa</span>
+              <span class="val">PTM - 3F56</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Cartão de Vencimento -->
+      <!-- Payment Expiry Card -->
       <div class="card-payment-status">
         <div class="pay-grid">
           <div class="days-left-box">
@@ -515,7 +577,7 @@
             <i class="ph ph-coins amount-icon"></i>
             <span class="amount-title">Semana</span>
             <span class="amount-val">R$ 350,00</span>
-            <span style="font-size: 0.65rem; color: var(--text-sub);">Valor do pagamento</span>
+            <span style="font-size: 0.6rem; color: var(--text-sub);">Valor do pagamento</span>
           </div>
         </div>
 
@@ -525,7 +587,7 @@
         </button>
       </div>
 
-      <!-- Sumário de Atraso e Multa -->
+      <!-- Overdue & Penalty Summary -->
       <div class="summary-grid">
         <div class="sum-item">
           <i class="ph ph-check-circle sum-icon green"></i>
@@ -544,7 +606,7 @@
         </div>
       </div>
 
-      <!-- Regras do Contrato -->
+      <!-- Contract Rules Card -->
       <div class="card-rules">
         <div class="rules-header">
           <i class="ph ph-info"></i>
@@ -592,7 +654,7 @@
         </div>
       </div>
 
-      <!-- Botão Detalhes -->
+      <!-- Contract Details Button -->
       <button class="btn-details">
         <i class="ph ph-motorbike"></i>
         Ver Detalhes do Contrato
@@ -604,7 +666,7 @@
       </div>
     </main>
 
-    <!-- Barra de Navegação Inferior -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav">
       <a href="#" class="nav-item active">
         <i class="ph ph-house"></i>
