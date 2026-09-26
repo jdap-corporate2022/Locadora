@@ -966,7 +966,7 @@
           <span>Atualização Inteligente via Foto</span>
         </div>
         <p class="ai-desc">
-          Tire uma foto limpa do painel/odômetro da moto. A nossa IA fará a leitura automática dos números para atualizar o progresso.
+          Tire uma foto limpa do painel/odômetro da moto. Faremos uma leitura automática dos números para atualizar o progresso.
         </p>
 
         <input type="file" id="foto-painel" accept="image/*" capture="environment" style="display: none;" onchange="processarFoto(event)">
@@ -1101,7 +1101,7 @@
 
       const statusEl = document.getElementById('status-ia');
       statusEl.style.color = "var(--accent-yellow)";
-      statusEl.innerText = "IA a analisar a imagem do odômetro...";
+      statusEl.innerText = "Analisando a imagem do odômetro. Aguarde...";
 
       try {
         const worker = await Tesseract.createWorker('eng');
@@ -1121,7 +1121,7 @@
         }
 
         statusEl.style.color = "var(--accent-green)";
-        statusEl.innerText = `IA leu: ${kmLido.toLocaleString('pt-BR')} km! Atualizando...`;
+        statusEl.innerText = `Leitura Reconhecida: ${kmLido.toLocaleString('pt-BR')} km! Atualizando...`;
 
         atualizarValoresOdometro(kmLido);
 
