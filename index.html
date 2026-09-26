@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MotoFácil - Dashboard</title>
+  <!-- Ícones Phosphor Icons -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Biblioteca Tesseract.js para leitura OCR de imagens do odômetro -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
     :root {
       --bg-color: #080c11;
@@ -527,6 +530,86 @@
       width: 60%; /* 600km rodados de 1000km */
       background: linear-gradient(90deg, var(--accent-yellow), #ff9100);
       border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    /* Módulo de Leitura IA na aba Manutenção */
+    .card-ai-upload {
+      background-color: var(--card-bg);
+      border: 1px dashed var(--accent-yellow);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .ai-icon-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-yellow);
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .ai-desc {
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      line-height: 1.3;
+    }
+
+    .btn-camera {
+      background: var(--accent-yellow);
+      color: #000;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .status-ia {
+      font-size: 0.7rem;
+      color: var(--accent-green);
+      font-weight: 700;
+      min-height: 16px;
+    }
+
+    .manual-box {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .manual-input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #080c11;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+
+    .btn-manual-save {
+      background: #182232;
+      color: #fff;
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
     }
 
     /* Tabela de Pagamentos na Aba Pagamentos */
@@ -685,7 +768,7 @@
         </div>
       </div>
 
-            <!-- Card Pagamento Atualizado -->
+      <!-- Card Pagamento Atualizado -->
       <div class="card-payment-status">
         <div class="pay-grid">
           <div class="days-left-box">
@@ -710,7 +793,6 @@
           Realizar Pagamento
         </button>
       </div>
-
 
       <div class="summary-grid">
         <div class="sum-item">
@@ -858,22 +940,48 @@
           </div>
           <div class="km-stat-card">
             <span class="lbl">Hodômetro Atual</span>
-            <span class="val" style="color: var(--accent-yellow);">175.925 km</span>
+            <span class="val" id="disp-km-atual" style="color: var(--accent-yellow);">175.925 km</span>
           </div>
         </div>
 
         <div class="oil-progress-box">
           <div class="oil-progress-head">
             <span>Quilometragem Rodada</span>
-            <span style="color: var(--accent-yellow);">600 / 1.000 km</span>
+            <span id="disp-km-rodados" style="color: var(--accent-yellow);">600 / 1.000 km</span>
           </div>
           <div class="oil-bar-bg">
-            <div class="oil-bar-fill"></div>
+            <div class="oil-bar-fill" id="oil-bar"></div>
           </div>
           <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--text-sub); margin-top: 6px;">
-            <span>Faltam <strong>400 km</strong> para a próxima troca</span>
+            <span>Faltam <strong id="disp-km-restantes">400 km</strong> para a próxima troca</span>
             <span>Próxima: <strong>176.325 km</strong></span>
           </div>
+        </div>
+      </div>
+
+      <!-- Leitura por IA e Leitura de Imagem -->
+      <div class="card-ai-upload">
+        <div class="ai-icon-title">
+          <i class="ph ph-sparkle"></i>
+          <span>Atualização Inteligente via Foto</span>
+        </div>
+        <p class="ai-desc">
+          Tire uma foto limpa do painel/odômetro da moto. A nossa IA fará a leitura automática dos números para atualizar o progresso.
+        </p>
+
+        <input type="file" id="foto-painel" accept="image/*" capture="environment" style="display: none;" onchange="processarFoto(event)">
+
+        <button class="btn-camera" onclick="document.getElementById('foto-painel').click()">
+          <i class="ph ph-camera"></i>
+          Tirar Foto do Odômetro
+        </button>
+
+        <div class="status-ia" id="status-ia"></div>
+
+        <!-- Entrada Manual de Contingência -->
+        <div class="manual-box">
+          <input type="number" id="input-km-manual" class="manual-input" placeholder="Ou digite o KM manual (Ex: 175925)">
+          <button class="btn-manual-save" onclick="salvarKmManual()">Salvar</button>
         </div>
       </div>
 
@@ -949,6 +1057,11 @@
   </div>
 
   <script>
+    // Variáveis do Contrato
+    const kmInicial = 175325;
+    const intervaloTroca = 1000;
+    const proximaTroca = 176325;
+
     function switchTab(tabId, element) {
       document.querySelectorAll('.tab-view').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
@@ -958,9 +1071,76 @@
       if (element) {
         element.classList.add('active');
       } else {
-        // Se for acionado via botão interno
         const navIndex = { 'tab-inicio': 0, 'tab-pagamentos': 1, 'tab-moto': 2, 'tab-perfil': 3 };
         document.querySelectorAll('.nav-item')[navIndex[tabId]].classList.add('active');
+      }
+    }
+
+    // Atualização de Odômetro na Tela
+    function atualizarValoresOdometro(novoKmAtual) {
+      if (novoKmAtual < kmInicial) {
+        alert("O KM informado não pode ser inferior ao KM inicial do contrato (175.325 km).");
+        return;
+      }
+
+      const kmRodados = novoKmAtual - kmInicial;
+      const kmRestantes = proximaTroca - novoKmAtual;
+      let pct = (kmRodados / intervaloTroca) * 100;
+      if (pct > 100) pct = 100;
+
+      document.getElementById('disp-km-atual').innerText = novoKmAtual.toLocaleString('pt-BR') + ' km';
+      document.getElementById('disp-km-rodados').innerText = kmRodados + ' / ' + intervaloTroca + ' km';
+      document.getElementById('disp-km-restantes').innerText = (kmRestantes > 0 ? kmRestantes : 0) + ' km';
+      document.getElementById('oil-bar').style.width = pct + '%';
+    }
+
+    // Leitura por OCR da Imagem do Odômetro
+    async function processarFoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('status-ia');
+      statusEl.style.color = "var(--accent-yellow)";
+      statusEl.innerText = "IA a analisar a imagem do odômetro...";
+
+      try {
+        const worker = await Tesseract.createWorker('eng');
+        await worker.setParameters({
+          tessedit_char_whitelist: '0123456789'
+        });
+
+        const res = await worker.recognize(file);
+        await worker.terminate();
+
+        const kmLido = parseInt(res.data.text.replace(/\D/g, ''), 10);
+
+        if (isNaN(kmLido) || kmLido < kmInicial) {
+          statusEl.style.color = "#ff3b30";
+          statusEl.innerText = "Não foi possível ler o KM. Use o campo manual abaixo.";
+          return;
+        }
+
+        statusEl.style.color = "var(--accent-green)";
+        statusEl.innerText = `IA leu: ${kmLido.toLocaleString('pt-BR')} km! Atualizando...`;
+
+        atualizarValoresOdometro(kmLido);
+
+      } catch (err) {
+        console.error(err);
+        statusEl.style.color = "#ff3b30";
+        statusEl.innerText = "Erro ao processar imagem. Digite o valor manualmente.";
+      }
+    }
+
+    // Salvamento Manual
+    function salvarKmManual() {
+      const input = document.getElementById('input-km-manual');
+      const val = parseInt(input.value, 10);
+      if (val) {
+        atualizarValoresOdometro(val);
+        input.value = "";
+        document.getElementById('status-ia').style.color = "var(--accent-green)";
+        document.getElementById('status-ia').innerText = "Quilometragem atualizada manualmente!";
       }
     }
   </script>
