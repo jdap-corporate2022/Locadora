@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoFácil - Minha Moto & Manutenção</title>
+  <!-- Ícones Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Motor de IA / OCR para leitura de imagens -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #080c11;
+      --card-bg: #0f1622;
+      --card-border: #1a2433;
+      --accent-yellow: #ffb800;
+      --accent-green: #00e676;
+      --text-main: #ffffff;
+      --text-sub: #8e9bb0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000000;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 414px;
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    header {
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--bg-color);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      color: var(--accent-yellow);
+      font-size: 2.2rem;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-title span {
+      color: var(--accent-yellow);
+    }
+
+    .logo-sub {
+      font-size: 0.55rem;
+      color: #cccccc;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .icon-btn {
+      font-size: 1.5rem;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+    }
+
+    /* Conteúdo Principal */
+    main {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Card da Moto */
+    .card-bike-info {
+      background: linear-gradient(135deg, #0f1622 0%, #151d2a 45%, #4a3800 100%);
+      border: 1px solid var(--accent-yellow);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bike-text h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .bike-text p {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .bike-img {
+      width: 120px;
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.8));
+    }
+
+    /* Card Odômetro & Manutenção */
+    .card-maintenance {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .maint-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+    }
+
+    .maint-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-yellow);
+    }
+
+    .km-badge {
+      background: rgba(255, 184, 0, 0.15);
+      color: var(--accent-yellow);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .km-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .km-stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .km-stat-card .lbl {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+    }
+
+    .km-stat-card .val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    /* Barra de Progresso do Óleo */
+    .oil-progress-box {
+      background: rgba(0,0,0,0.3);
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 3px solid var(--accent-yellow);
+    }
+
+    .oil-progress-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .oil-bar-bg {
+      height: 10px;
+      background: #182232;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .oil-bar-fill {
+      height: 100%;
+      width: 60%; /* 600km rodados de 1000km */
+      background: linear-gradient(90deg, var(--accent-yellow), #ff9100);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    .oil-info-foot {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
+
+    /* Módulo de Leitura por IA / Foto */
+    .card-ai-upload {
+      background-color: var(--card-bg);
+      border: 1px dashed var(--accent-yellow);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .ai-icon-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-yellow);
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    .ai-desc {
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      line-height: 1.3;
+    }
+
+    .btn-camera {
+      background: var(--accent-yellow);
+      color: #000;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .status-ia {
+      font-size: 0.7rem;
+      color: var(--accent-green);
+      font-weight: 700;
+      min-height: 16px;
+    }
+
+    /* Manual Entry Fallback */
+    .manual-box {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .manual-input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #080c11;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+
+    .btn-manual-save {
+      background: #182232;
+      color: #fff;
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* Rules & Tips Card */
+    .card-rules {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .rules-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-yellow);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .rule-item {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .rule-icon {
+      color: var(--accent-yellow);
+      font-size: 1.2rem;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .rule-text h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .rule-text p {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+      line-height: 1.2;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 414px;
+      height: 60px;
+      background-color: #080d14;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-sub);
+      font-size: 0.6rem;
+      text-decoration: none;
+    }
+
+    .nav-item i {
+      font-size: 1.2rem;
+    }
+
+    .nav-item.active {
+      color: var(--accent-yellow);
+    }
+
+    .nav-item.active::after {
+      content: '';
+      width: 16px;
+      height: 2px;
+      background-color: var(--accent-yellow);
+      margin-top: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <i class="ph ph-list icon-btn"></i>
+      <div class="logo-container">
+        <i class="ph ph-motorbike logo-icon"></i>
+        <div class="logo-text">
+          <div class="logo-title">Moto<span>Fácil</span></div>
+          <div class="logo-sub">LOCADORA DE MOTOS</div>
+        </div>
+      </div>
+      <div class="icon-btn">
+        <i class="ph ph-bell"></i>
+      </div>
+    </header>
+
+    <main>
+      <!-- Veículo Card -->
+      <div class="card-bike-info">
+        <div class="bike-text">
+          <h2>HONDA CG 160 START</h2>
+          <p>Placa: <strong>PTM - 3F56</strong></p>
+        </div>
+        <img class="bike-img" src="img_honda.png" alt="Honda CG 160 Start">
+      </div>
+
+      <!-- Resumo do Odômetro e Troca de Óleo -->
+      <div class="card-maintenance">
+        <div class="maint-header">
+          <div class="maint-title">
+            <i class="ph ph-drop"></i>
+            <span>Troca de Óleo</span>
+          </div>
+          <span class="km-badge">A cada 1.000 km</span>
+        </div>
+
+        <div class="km-stats-grid">
+          <div class="km-stat-card">
+            <span class="lbl">Hodômetro Inicial</span>
+            <span class="val">175.325 km</span>
+          </div>
+          <div class="km-stat-card">
+            <span class="lbl">Hodômetro Atual</span>
+            <span class="val" id="disp-km-atual" style="color: var(--accent-yellow);">175.925 km</span>
+          </div>
+        </div>
+
+        <div class="oil-progress-box">
+          <div class="oil-progress-head">
+            <span>Quilometragem Rodada</span>
+            <span id="disp-km-rodados" style="color: var(--accent-yellow);">600 / 1.000 km</span>
+          </div>
+          <div class="oil-bar-bg">
+            <div class="oil-bar-fill" id="oil-bar"></div>
+          </div>
+          <div class="oil-info-foot">
+            <span>Faltam <strong id="disp-km-restantes">400 km</strong> para a próxima troca</span>
+            <span>Próxima: <strong>176.325 km</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leitura por IA e Leitura de Imagem -->
+      <div class="card-ai-upload">
+        <div class="ai-icon-title">
+          <i class="ph ph-sparkle"></i>
+          <span>Atualização Inteligente via Foto</span>
+        </div>
+        <p class="ai-desc">
+          Tire uma foto limpa do painel/odômetro da moto. A nossa IA fará a leitura automática dos números para atualizar o progresso.
+        </p>
+
+        <input type="file" id="foto-painel" accept="image/*" capture="environment" style="display: none;" onchange="processarFoto(event)">
+
+        <button class="btn-camera" onclick="document.getElementById('foto-painel').click()">
+          <i class="ph ph-camera"></i>
+          Tirar Foto do Odômetro
+        </button>
+
+        <div class="status-ia" id="status-ia"></div>
+
+        <!-- Entrada Manual caso haja reflexo ou desfoque -->
+        <div class="manual-box">
+          <input type="number" id="input-km-manual" class="manual-input" placeholder="Ou digite o KM manual (Ex: 175925)">
+          <button class="btn-manual-save" onclick="salvarKmManual()">Salvar</button>
+        </div>
+      </div>
+
+      <!-- Regras e Dicas de Manutenção -->
+      <div class="card-rules">
+        <div class="rules-header">
+          <i class="ph ph-wrench"></i>
+          <span>Orientações de Manutenção</span>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-check-circle rule-icon"></i>
+          <div class="rule-text">
+            <h4>Nível do Óleo</h4>
+            <p>Verifique o nível do óleo semanalmente com a moto desligada e em piso plano.</p>
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-warning-triangle rule-icon"></i>
+          <div class="rule-text">
+            <h4>Pneus e Corrente</h4>
+            <p>Calibre os pneus semanalmente e verifique a lubrificação da corrente de transmissão.</p>
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <i class="ph ph-clock rule-icon"></i>
+          <div class="rule-text">
+            <h4>Agendamento de Troca</h4>
+            <p>Ao atingir 900 km rodados, entre em contacto com a locadora para agendar a troca sem custo.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Barra de Navegação Inferior -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item">
+        <i class="ph ph-house"></i>
+        <span>Início</span>
+      </a>
+      <a href="pagamentos.html" class="nav-item">
+        <i class="ph ph-receipt"></i>
+        <span>Pagamentos</span>
+      </a>
+      <a href="minha_moto.html" class="nav-item active">
+        <i class="ph ph-wrench"></i>
+        <span>Minha Moto</span>
+      </a>
+      <a href="perfil.html" class="nav-item">
+        <i class="ph ph-user-circle"></i>
+        <span>Perfil</span>
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    // Variáveis Base do Contrato
+    const kmInicial = 175325;
+    const intervaloTroca = 1000;
+    const proximaTroca = 176325;
+
+    // Atualiza os componentes visuais
+    function atualizarValoresOdometro(novoKmAtual) {
+      if (novoKmAtual < kmInicial) {
+        alert("O KM informado não pode ser inferior ao KM inicial do contrato (175.325 km).");
+        return;
+      }
+
+      const kmRodados = novoKmAtual - kmInicial;
+      const kmRestantes = proximaTroca - novoKmAtual;
+      let pct = (kmRodados / intervaloTroca) * 100;
+      if (pct > 100) pct = 100;
+
+      document.getElementById('disp-km-atual').innerText = novoKmAtual.toLocaleString('pt-BR') + ' km';
+      document.getElementById('disp-km-rodados').innerText = kmRodados + ' / ' + intervaloTroca + ' km';
+      document.getElementById('disp-km-restantes').innerText = (kmRestantes > 0 ? kmRestantes : 0) + ' km';
+      document.getElementById('oil-bar').style.width = pct + '%';
+    }
+
+    // Leitura Inteligente via IA / OCR (Tesseract)
+    async function processarFoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('status-ia');
+      statusEl.style.color = "var(--accent-yellow)";
+      statusEl.innerText = "IA a analisar a imagem do odômetro...";
+
+      try {
+        const worker = await Tesseract.createWorker('eng');
+        await worker.setParameters({
+          tessedit_char_whitelist: '0123456789'
+        });
+
+        const res = await worker.recognize(file);
+        await worker.terminate();
+
+        const kmLido = parseInt(res.data.text.replace(/\D/g, ''), 10);
+
+        if (isNaN(kmLido) || kmLido < kmInicial) {
+          statusEl.style.color = "#ff3b30";
+          statusEl.innerText = "Não foi possível ler o KM. Use o campo manual abaixo.";
+          return;
+        }
+
+        statusEl.style.color = "var(--accent-green)";
+        statusEl.innerText = `IA leu: ${kmLido.toLocaleString('pt-BR')} km! Atualizando...`;
+
+        atualizarValoresOdometro(kmLido);
+
+      } catch (err) {
+        console.error(err);
+        statusEl.style.color = "#ff3b30";
+        statusEl.innerText = "Erro ao processar imagem. Digite o valor manualmente.";
+      }
+    }
+
+    // Salvamento Manual de Contingência
+    function salvarKmManual() {
+      const input = document.getElementById('input-km-manual');
+      const val = parseInt(input.value, 10);
+      if (val) {
+        atualizarValoresOdometro(val);
+        input.value = "";
+        document.getElementById('status-ia').style.color = "var(--accent-green)";
+        document.getElementById('status-ia').innerText = "Quilometragem atualizada manualmente!";
+      }
+    }
+  </script>
+</body>
+</html>
