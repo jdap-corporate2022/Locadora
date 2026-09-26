@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoFácil - Histórico de Pagamentos</title>
+  <!-- Ícones Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    :root {
+      --bg-color: #080c11;
+      --card-bg: #0f1622;
+      --card-border: #1a2433;
+      --accent-yellow: #ffb800;
+      --accent-green: #00e676;
+      --text-main: #ffffff;
+      --text-sub: #8e9bb0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000000;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 414px;
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    header {
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--bg-color);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      color: var(--accent-yellow);
+      font-size: 2.2rem;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-title span {
+      color: var(--accent-yellow);
+    }
+
+    .logo-sub {
+      font-size: 0.55rem;
+      color: #cccccc;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .icon-btn {
+      font-size: 1.5rem;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Conteúdo Principal */
+    main {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Card de Resumo Financeiro */
+    .card-summary {
+      background: linear-gradient(135deg, #0f1622 0%, #151d2a 45%, #4a3800 100%);
+      border: 1px solid var(--accent-yellow);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .summary-title {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    .summary-val {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 5px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 10px;
+    }
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-box .lbl {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+    }
+
+    .stat-box .val {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    /* Lista de Parcelas */
+    .card-history {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+    }
+
+    .history-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--accent-yellow);
+    }
+
+    .payment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pay-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pay-card.active-next {
+      border: 1px solid var(--accent-yellow);
+      background: rgba(255, 184, 0, 0.05);
+    }
+
+    .pay-info h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .pay-info p {
+      font-size: 0.65rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .pay-status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .pay-amount {
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .status-badge {
+      font-size: 0.58rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .status-badge.next {
+      background: rgba(255, 184, 0, 0.2);
+      color: var(--accent-yellow);
+      border: 1px solid var(--accent-yellow);
+    }
+
+    .status-badge.future {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-sub);
+    }
+
+    /* Regras da Caução */
+    .card-caucao {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .caucao-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-yellow);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .caucao-text {
+      font-size: 0.68rem;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 414px;
+      height: 60px;
+      background-color: #080d14;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-sub);
+      font-size: 0.6rem;
+      text-decoration: none;
+    }
+
+    .nav-item i {
+      font-size: 1.2rem;
+    }
+
+    .nav-item.active {
+      color: var(--accent-yellow);
+    }
+
+    .nav-item.active::after {
+      content: '';
+      width: 16px;
+      height: 2px;
+      background-color: var(--accent-yellow);
+      margin-top: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <i class="ph ph-list icon-btn"></i>
+      <div class="logo-container">
+        <i class="ph ph-motorbike logo-icon"></i>
+        <div class="logo-text">
+          <div class="logo-title">Moto<span>Fácil</span></div>
+          <div class="logo-sub">LOCADORA DE MOTOS</div>
+        </div>
+      </div>
+      <div class="icon-btn">
+        <i class="ph ph-bell"></i>
+      </div>
+    </header>
+
+    <main>
+      <!-- Resumo Geral -->
+      <div class="card-summary">
+        <span class="summary-title">Valor Semanal do Contrato</span>
+        <div class="summary-val">R$ 320,00</div>
+        
+        <div class="summary-stats">
+          <div class="stat-box">
+            <span class="lbl">Duração Total</span>
+            <span class="val">12 Semanas (3 Meses)</span>
+          </div>
+          <div class="stat-box">
+            <span class="lbl">Próximo Vencimento</span>
+            <span class="val" style="color: var(--accent-yellow);">30/09/2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista Completa das 12 Parcela Semanais -->
+      <div class="card-history">
+        <div class="history-header">
+          <div class="history-title">
+            <i class="ph ph-receipt"></i>
+            <span>Cronograma de Pagamentos</span>
+          </div>
+          <span style="font-size: 0.65rem; color: var(--text-sub);">12 Parcelas</span>
+        </div>
+
+        <div class="payment-list">
+          <!-- Parcela 1 -->
+          <div class="pay-card active-next">
+            <div class="pay-info">
+              <h4>1ª Sem. — Vencimento: 30/09/2026</h4>
+              <p>Quarta-feira • Próximo pagamento</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount" style="color: var(--accent-yellow);">R$ 320,00</span>
+              <span class="status-badge next">A Vencer</span>
+            </div>
+          </div>
+
+          <!-- Parcela 2 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>2ª Sem. — Vencimento: 07/10/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 3 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>3ª Sem. — Vencimento: 14/10/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 4 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>4ª Sem. — Vencimento: 21/10/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 5 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>5ª Sem. — Vencimento: 28/10/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 6 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>6ª Sem. — Vencimento: 04/11/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 7 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>7ª Sem. — Vencimento: 11/11/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 8 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>8ª Sem. — Vencimento: 18/11/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 9 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>9ª Sem. — Vencimento: 25/11/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 10 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>10ª Sem. — Vencimento: 02/12/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 11 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>11ª Sem. — Vencimento: 09/12/2026</h4>
+              <p>Quarta-feira</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+          <!-- Parcela 12 -->
+          <div class="pay-card">
+            <div class="pay-info">
+              <h4>12ª Sem. — Vencimento: 16/12/2026</h4>
+              <p>Quarta-feira • Término do Aluguel</p>
+            </div>
+            <div class="pay-status">
+              <span class="pay-amount">R$ 320,00</span>
+              <span class="status-badge future">Pendente</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Garantia e Caução -->
+      <div class="card-caucao">
+        <div class="caucao-header">
+          <i class="ph ph-shield-check"></i>
+          <span>Informações da Caução (R$ 700,00)</span>
+        </div>
+        <p class="caucao-text">
+          O valor da caução permanece retido durante a vigência do contrato. A devolução está prevista para <strong>15/01/2027</strong> (30 dias após o término em 16/12/2026), sujeita a deduções decorrentes de eventuais multas de trânsito ou avarias por mau uso.
+        </p>
+      </div>
+    </main>
+
+    <!-- Barra de Navegação Inferior -->
+    <nav class="bottom-nav">
+      <a href="index.html" class="nav-item">
+        <i class="ph ph-house"></i>
+        <span>Início</span>
+      </a>
+      <a href="pagamentos.html" class="nav-item active">
+        <i class="ph ph-receipt"></i>
+        <span>Pagamentos</span>
+      </a>
+      <a href="minha_moto.html" class="nav-item">
+        <i class="ph ph-wrench"></i>
+        <span>Minha Moto</span>
+      </a>
+      <a href="perfil.html" class="nav-item">
+        <i class="ph ph-user-circle"></i>
+        <span>Perfil</span>
+      </a>
+    </nav>
+  </div>
+
+</body>
+</html>
