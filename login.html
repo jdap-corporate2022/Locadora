@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoFácil - Entrar no Sistema</title>
+  <style>
+    :root {
+      --bg-dark: #080c11;
+      --card-bg: #0f1622;
+      --card-border: #1a2433;
+      --accent-yellow: #ffb800;
+      --accent-green: #00e676;
+      --text-main: #ffffff;
+      --text-secondary: #8e9bb0;
+      --input-bg: #080c11;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000000;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 380px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .logo-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .logo-header h1 {
+      font-size: 26px;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-header h1 span {
+      color: var(--accent-yellow);
+    }
+
+    .logo-header p {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent-yellow);
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .forgot-password-wrapper {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .forgot-password-link {
+      color: var(--accent-yellow);
+      font-size: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .forgot-password-link:hover {
+      text-decoration: underline;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background-color: var(--accent-yellow);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-login:hover {
+      opacity: 0.9;
+    }
+
+    .error-message {
+      color: #ff3b30;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 14px;
+      display: none;
+    }
+
+    /* Modal Esqueci Minha Senha */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--accent-yellow);
+      margin-bottom: 8px;
+    }
+
+    .modal-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .btn-modal-send {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent-yellow);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .btn-modal-close {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .success-alert {
+      color: var(--accent-green);
+      font-size: 12px;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="logo-header">
+      <h1>Moto<span>Fácil</span></h1>
+      <p>Acesse sua conta para gerenciar a moto</p>
+    </div>
+
+    <form id="loginForm" onsubmit="autenticarUsuario(event)">
+      <div class="form-group">
+        <label for="usuario">CPF ou E-mail</label>
+        <input type="text" id="usuario" placeholder="Digite seu CPF ou e-mail" required />
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <div class="input-wrapper">
+          <input type="password" id="senha" placeholder="Digite sua senha" required />
+          <button type="button" class="toggle-password" onclick="alternarVisibilidadeSenha()">Mostrar</button>
+        </div>
+      </div>
+
+      <div class="forgot-password-wrapper">
+        <a class="forgot-password-link" onclick="abrirModal()">Esqueci minha senha</a>
+      </div>
+
+      <button type="submit" class="btn-login">Entrar</button>
+      <div id="msgErro" class="error-message">Usuário ou senha incorretos.</div>
+    </form>
+  </div>
+
+  <!-- Modal para Solicitação de Nova Senha -->
+  <div class="modal-overlay" id="modalForgot">
+    <div class="modal-card">
+      <div class="modal-title">Recuperação de Acesso</div>
+      <p class="modal-desc">
+        Informe o seu CPF ou E-mail cadastrado. O administrador receberá a solicitação e enviará sua nova senha via WhatsApp, SMS ou E-mail.
+      </p>
+
+      <div class="form-group">
+        <label for="reqUsuario">CPF ou E-mail do Cadastrado</label>
+        <input type="text" id="reqUsuario" placeholder="Ex: 000.000.000-00" />
+      </div>
+
+      <button class="btn-modal-send" onclick="solicitarNovaSenha()">Enviar Solicitação ao ADM</button>
+      <button class="btn-modal-close" onclick="fecharModal()">Cancelar</button>
+
+      <div id="msgSucessoModal" class="success-alert">
+        Solicitação enviada! O administrador entrará em contato em breve.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function alternarVisibilidadeSenha() {
+      const campoSenha = document.getElementById('senha');
+      const btnToggle = document.querySelector('.toggle-password');
+
+      if (campoSenha.type === 'password') {
+        campoSenha.type = 'text';
+        btnToggle.innerText = 'Ocultar';
+      } else {
+        campoSenha.type = 'password';
+        btnToggle.innerText = 'Mostrar';
+      }
+    }
+
+    function autenticarUsuario(event) {
+      event.preventDefault();
+      const usuario = document.getElementById('usuario').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+      const msgErro = document.getElementById('msgErro');
+
+      if (usuario && senha) {
+        msgErro.style.display = 'none';
+        window.location.href = 'index.html';
+      } else {
+        msgErro.innerText = 'Por favor, preencha todos os campos.';
+        msgErro.style.display = 'block';
+      }
+    }
+
+    /* Lógica do Modal "Esqueci Minha Senha" */
+    function abrirModal() {
+      document.getElementById('modalForgot').style.display = 'flex';
+      document.getElementById('msgSucessoModal').style.display = 'none';
+    }
+
+    function fecharModal() {
+      document.getElementById('modalForgot').style.display = 'none';
+    }
+
+    function solicitarNovaSenha() {
+      const reqVal = document.getElementById('reqUsuario').value.trim();
+      if (!reqVal) {
+        alert("Por favor, digite seu CPF ou e-mail cadastrado.");
+        return;
+      }
+
+      // Exibe mensagem de confirmação para o usuário
+      const msgSucesso = document.getElementById('msgSucessoModal');
+      msgSucesso.style.display = 'block';
+
+      // Limpa o campo e fecha o modal automaticamente após 2.5 segundos
+      setTimeout(() => {
+        document.getElementById('reqUsuario').value = '';
+        fecharModal();
+      }, 2500);
+    }
+  </script>
+
+</body>
+</html>
