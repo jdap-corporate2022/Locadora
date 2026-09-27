@@ -110,14 +110,33 @@
       font-weight: 600;
     }
 
-    .forgot-password-wrapper {
-      text-align: right;
-      margin-bottom: 20px;
+    /* Opções adicionais: Lembrar de mim e Esqueci a Senha */
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      font-size: 12px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-me input[type="checkbox"] {
+      accent-color: var(--accent-yellow);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
     }
 
     .forgot-password-link {
       color: var(--accent-yellow);
-      font-size: 12px;
       text-decoration: none;
       cursor: pointer;
       font-weight: 600;
@@ -245,8 +264,12 @@
         </div>
       </div>
 
-      <div class="forgot-password-wrapper">
-        <a class="forgot-password-link" onclick="abrirModal()">Esqueci minha senha</a>
+      <div class="login-options">
+        <label class="remember-me">
+          <input type="checkbox" id="manterConectado" />
+          <span>Manter conectado neste dispositivo</span>
+        </label>
+        <a class="forgot-password-link" onclick="abrirModal()">Esqueci a senha</a>
       </div>
 
       <button type="submit" class="btn-login">Entrar</button>
@@ -277,6 +300,13 @@
   </div>
 
   <script>
+    // Verifica se já existe sessão salva ao abrir a página de login
+    window.onload = function() {
+      if (localStorage.getItem('usuarioLogado') === 'true') {
+        window.location.href = 'index.html';
+      }
+    };
+
     function alternarVisibilidadeSenha() {
       const campoSenha = document.getElementById('senha');
       const btnToggle = document.querySelector('.toggle-password');
@@ -294,10 +324,20 @@
       event.preventDefault();
       const usuario = document.getElementById('usuario').value.trim();
       const senha = document.getElementById('senha').value.trim();
+      const manterConectado = document.getElementById('manterConectado').checked;
       const msgErro = document.getElementById('msgErro');
 
       if (usuario && senha) {
         msgErro.style.display = 'none';
+
+        // Armazena a sessão
+        if (manterConectado) {
+          localStorage.setItem('usuarioLogado', 'true');
+        } else {
+          sessionStorage.setItem('usuarioLogado', 'true');
+        }
+
+        // Redireciona para a tela inicial
         window.location.href = 'index.html';
       } else {
         msgErro.innerText = 'Por favor, preencha todos os campos.';
@@ -305,7 +345,6 @@
       }
     }
 
-    /* Lógica do Modal "Esqueci Minha Senha" */
     function abrirModal() {
       document.getElementById('modalForgot').style.display = 'flex';
       document.getElementById('msgSucessoModal').style.display = 'none';
@@ -322,11 +361,9 @@
         return;
       }
 
-      // Exibe mensagem de confirmação para o usuário
       const msgSucesso = document.getElementById('msgSucessoModal');
       msgSucesso.style.display = 'block';
 
-      // Limpa o campo e fecha o modal automaticamente após 2.5 segundos
       setTimeout(() => {
         document.getElementById('reqUsuario').value = '';
         fecharModal();
