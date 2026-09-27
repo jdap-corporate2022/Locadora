@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoFácil - Painel Administrativo</title>
+  <!-- Ícones Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    :root {
+      --bg-color: #080c11;
+      --card-bg: #0f1622;
+      --card-border: #1a2433;
+      --accent-yellow: #ffb800;
+      --accent-green: #00e676;
+      --accent-red: #ff3b30;
+      --text-main: #ffffff;
+      --text-sub: #8e9bb0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000000;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 12px;
+    }
+
+    .admin-container {
+      width: 100%;
+      max-width: 900px;
+      background-color: var(--bg-color);
+      min-height: 90vh;
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo-admin {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-admin i {
+      color: var(--accent-yellow);
+      font-size: 2rem;
+    }
+
+    .logo-title {
+      font-size: 1.3rem;
+      font-weight: 900;
+    }
+
+    .logo-title span {
+      color: var(--accent-yellow);
+    }
+
+    /* BOTÃO ESTRATÉGICO DE NOVO CADASTRO */
+    .btn-novo-locatario {
+      background: linear-gradient(135deg, #ffb800 0%, #ff8c00 100%);
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 184, 0, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-novo-locatario:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 184, 0, 0.4);
+    }
+
+    /* Métricas do Negócio */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .metric-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .metric-icon.yellow { background: rgba(255, 184, 0, 0.15); color: var(--accent-yellow); }
+    .metric-icon.green { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); }
+    .metric-icon.red { background: rgba(255, 59, 48, 0.15); color: var(--accent-red); }
+
+    .metric-info .lbl { font-size: 0.75rem; color: var(--text-sub); }
+    .metric-info .val { font-size: 1.2rem; font-weight: 800; margin-top: 2px; }
+
+    /* Tabela / Lista de Locatários */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-yellow);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    th {
+      color: var(--text-sub);
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .status-pill.ok { background: rgba(0, 230, 118, 0.15); color: var(--accent-green); }
+    .status-pill.atraso { background: rgba(255, 59, 48, 0.15); color: var(--accent-red); }
+
+    .btn-action {
+      background: #182232;
+      color: #fff;
+      border: 1px solid var(--card-border);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    /* Modal de Cadastro de Novo Locatário */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--accent-yellow);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+    }
+
+    .modal-header h3 {
+      font-size: 1rem;
+      color: var(--accent-yellow);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group label {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+    }
+
+    .form-group input, .form-group select {
+      padding: 10px;
+      background: #080c11;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-save-modal {
+      background: var(--accent-yellow);
+      color: #000;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <!-- Header Admin -->
+    <header>
+      <div class="logo-admin">
+        <i class="ph ph-shield-check"></i>
+        <div class="logo-title">Moto<span>Fácil</span> ADM</div>
+      </div>
+
+      <!-- BOTÃO ESTRATÉGICO DE CADASTRO -->
+      <button class="btn-novo-locatario" onclick="abrirModalCadastro()">
+        <i class="ph ph-user-plus"></i>
+        Novo Locatário
+      </button>
+    </header>
+
+    <!-- Métricas Globais -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon yellow">
+          <i class="ph ph-motorbike"></i>
+        </div>
+        <div class="metric-info">
+          <div class="lbl">Motos Alugadas</div>
+          <div class="val">8 / 10</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon green">
+          <i class="ph ph-currency-circle-dollar"></i>
+        </div>
+        <div class="metric-info">
+          <div class="lbl">Receita Semanal</div>
+          <div class="val">R$ 2.560,00</div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon red">
+          <i class="ph ph-warning-circle"></i>
+        </div>
+        <div class="metric-info">
+          <div class="lbl">Em Atraso</div>
+          <div class="val">1 Locatário</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela de Controle de Contratos e Manutenções -->
+    <div class="section-title">
+      <i class="ph ph-users"></i>
+      <span>Gestão de Locatários e Contratos</span>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Locatário</th>
+            <th>Moto / Placa</th>
+            <th>Semana</th>
+            <th>Status Pago</th>
+            <th>KM Atual</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>Carlos Eduardo Silva</strong><br>
+              <small style="color: var(--text-sub);">Início: 23/09/2026</small>
+            </td>
+            <td>HONDA CG 160 START<br><small style="color: var(--text-sub);">PTM-3F56</small></td>
+            <td>1/12</td>
+            <td><span class="status-pill ok">Em Dia</span></td>
+            <td>175.925 km</td>
+            <td><button class="btn-action" onclick="alert('Gerenciar Carlos Eduardo')">Editar</button></td>
+          </tr>
+          <tr>
+            <td>
+              <strong>João Marcos Lima</strong><br>
+              <small style="color: var(--text-sub);">Início: 10/08/2026</small>
+            </td>
+            <td>YAMAHA FACTOR 150<br><small style="color: var(--text-sub);">KRT-9A12</small></td>
+            <td>7/12</td>
+            <td><span class="status-pill atraso">2 Dias Atraso</span></td>
+            <td>84.120 km</td>
+            <td><button class="btn-action" onclick="alert('Gerenciar João Marcos')">Editar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL DE CADASTRO DE NOVO LOCATÁRIO -->
+  <div class="modal-overlay" id="modalCadastro">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="ph ph-user-plus"></i> Cadastrar Novo Locatário</h3>
+        <i class="ph ph-x" style="cursor: pointer;" onclick="fecharModalCadastro()"></i>
+      </div>
+
+      <form id="formNovoLocatario" onsubmit="salvarNovoLocatario(event)">
+        <div class="form-group">
+          <label>Nome do Locatário</label>
+          <input type="text" placeholder="Ex: Roberto Alves" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Modelo da Moto</label>
+            <input type="text" placeholder="Ex: HONDA CG 160" required>
+          </div>
+          <div class="form-group">
+            <label>Placa</label>
+            <input type="text" placeholder="Ex: ABC-1234" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Valor Semanal (R$)</label>
+            <input type="number" value="320" required>
+          </div>
+          <div class="form-group">
+            <label>Caução Retida (R$)</label>
+            <input type="number" value="700" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Data Início Contrato</label>
+            <input type="date" required>
+          </div>
+          <div class="form-group">
+            <label>KM Inicial Odômetro</label>
+            <input type="number" placeholder="Ex: 50000" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-save-modal">Cadastrar Contrato</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function abrirModalCadastro() {
+      document.getElementById('modalCadastro').style.display = 'flex';
+    }
+
+    function fecharModalCadastro() {
+      document.getElementById('modalCadastro').style.display = 'none';
+    }
+
+    function salvarNovoLocatario(event) {
+      event.preventDefault();
+      alert("Novo locatário cadastrado com sucesso!");
+      fecharModalCadastro();
+    }
+  </script>
+</body>
+</html>
