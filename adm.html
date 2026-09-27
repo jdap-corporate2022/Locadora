@@ -114,7 +114,7 @@
 
     .metric-value { font-size: 1.1rem; font-weight: 800; margin-top: 4px; }
 
-    /* LISTA SIMPLIFICADA DE LOCATÁRIOS */
+    /* LISTA */
     .section-title {
       font-size: 0.95rem;
       font-weight: 700;
@@ -139,11 +139,6 @@
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      transition: border-color 0.2s;
-    }
-
-    .item-locatario:hover {
-      border-color: var(--accent-yellow);
     }
 
     .info-locatario h4 { font-size: 0.9rem; font-weight: 700; }
@@ -159,7 +154,7 @@
     .badge-status.ok { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
     .badge-status.atraso { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
 
-    /* POP-UP / MODAL DETALHADO DA IMAGEM */
+    /* MODAIS / OVERLAYS */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -227,23 +222,79 @@
     }
 
     .btn-act i { font-size: 1.1rem; color: var(--accent-yellow); }
+
+    /* MODAL EXCLUSIVO DE MANUTENÇÃO */
+    .oil-progress-box {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bar-outer {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-inner {
+      height: 100%;
+      width: 60%; /* 600km de 1000km */
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-yellow));
+    }
+
+    .ocr-preview-box {
+      border: 1px dashed var(--card-border);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ocr-preview-box img {
+      width: 100%;
+      max-height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .btn-reset-oil {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
   </style>
 </head>
 <body>
 
   <div class="admin-container">
-    <!-- HEADER -->
     <header>
       <div class="brand">
         <i class="ph ph-shield-check"></i>
         <h1>Moto<span>Fácil</span> ADM</h1>
       </div>
-      <button class="btn-novo" onclick="alert('Modal de Cadastro')">
+      <button class="btn-novo">
         <i class="ph ph-user-plus"></i> Novo Locatário
       </button>
     </header>
 
-    <!-- MÉTRICAS -->
     <div class="metrics-grid">
       <div class="metric-card">
         <div class="metric-header"><span>Frota Alugada</span><div class="metric-icon yellow"><i class="ph ph-motorbike"></i></div></div>
@@ -263,33 +314,22 @@
       </div>
     </div>
 
-    <!-- LISTA DE LOCATÁRIOS -->
     <div class="section-title">
       <i class="ph ph-users-three"></i> Locatários Cadastrados
     </div>
 
     <div class="locatarios-lista">
-      <!-- Item 1 -->
-      <div class="item-locatario" onclick="abrirDetalhes('Carlos Eduardo Silva', 'HONDA CG 160 START • PTM-3F56', 'Em Dia', 'ok')">
+      <div class="item-locatario" onclick="abrirDetalhes('Carlos Eduardo Silva', 'HONDA CG 160 START • PTM-3F56')">
         <div class="info-locatario">
           <h4>Carlos Eduardo Silva</h4>
           <p>HONDA CG 160 START • PTM-3F56</p>
         </div>
         <span class="badge-status ok">Em Dia</span>
       </div>
-
-      <!-- Item 2 -->
-      <div class="item-locatario" onclick="abrirDetalhes('João Marcos Lima', 'YAMAHA FACTOR 150 • KRT-9A12', '2 Dias Atraso', 'atraso')">
-        <div class="info-locatario">
-          <h4>João Marcos Lima</h4>
-          <p>YAMAHA FACTOR 150 • KRT-9A12</p>
-        </div>
-        <span class="badge-status atraso">2 Dias Atraso</span>
-      </div>
     </div>
   </div>
 
-  <!-- POP-UP DETALHADO DO LOCATÁRIO (IDÊNTICO À IMAGEM) -->
+  <!-- MODAL PRINCIPAL DO LOCATÁRIO -->
   <div class="modal-overlay" id="modalLocatario">
     <div class="modal-card">
       <div class="modal-head">
@@ -297,7 +337,7 @@
           <h3 id="popNome">Carlos Eduardo Silva</h3>
           <p id="popVeiculo" style="font-size: 0.75rem; color: var(--text-sub);">HONDA CG 160 START • PTM-3F56</p>
         </div>
-        <i class="ph ph-x" style="cursor: pointer; font-size: 1.3rem;" onclick="fecharDetalhes()"></i>
+        <i class="ph ph-x" style="cursor: pointer; font-size: 1.3rem;" onclick="fecharModal('modalLocatario')"></i>
       </div>
 
       <div class="details-grid">
@@ -309,30 +349,76 @@
         <div><span>Atraso / Multa</span><strong>0 dias (R$ 0,00)</strong></div>
       </div>
 
-      <!-- BOTOES DE AÇÕES FINANCEIRA / MANUTENÇÃO / EDICAO -->
       <div class="action-row">
-        <button class="btn-act" onclick="alert('Exibindo histórico de pagamentos...')">
+        <button class="btn-act" onclick="alert('Histórico Financeiro')">
           <i class="ph ph-receipt"></i> Pagamentos
         </button>
-        <button class="btn-act" onclick="alert('Exibindo detalhes do óleo e foto do painel...')">
+        <button class="btn-act" onclick="abrirManutencao()">
           <i class="ph ph-wrench"></i> Manutenção
         </button>
-        <button class="btn-act" onclick="alert('Abrindo edição do contrato...')">
+        <button class="btn-act" onclick="alert('Editar Dados')">
           <i class="ph ph-pencil"></i> Editar
         </button>
       </div>
     </div>
   </div>
 
+  <!-- POP-UP CUSTOMIZADO DE MANUTENÇÃO (REMPLAÇA O ALERT) -->
+  <div class="modal-overlay" id="modalManutencao">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3><i class="ph ph-wrench" style="color: var(--accent-yellow);"></i> Painel de Manutenção</h3>
+          <p style="font-size: 0.75rem; color: var(--text-sub);">Carlos Eduardo Silva • PTM-3F56</p>
+        </div>
+        <i class="ph ph-x" style="cursor: pointer; font-size: 1.3rem;" onclick="fecharModal('modalManutencao')"></i>
+      </div>
+
+      <!-- Barra de Vida do Óleo -->
+      <div class="oil-progress-box">
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem;">
+          <span>Ciclo do Óleo (1.000 KM)</span>
+          <strong style="color: var(--accent-yellow);">600 / 1.000 KM</strong>
+        </div>
+        <div class="bar-outer">
+          <div class="bar-inner"></div>
+        </div>
+        <span style="font-size: 0.7rem; color: var(--text-sub);">Faltam 400 KM para atingir 176.325 km</span>
+      </div>
+
+      <!-- Leitura por IA OCR e Imagem Enviada pelo Cliente -->
+      <div class="ocr-preview-box">
+        <span style="font-size: 0.75rem; color: var(--text-sub);">Última Foto Enviada do Painel (OCR):</span>
+        <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=60" alt="Painel Moto">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-green);">Leitura Tesseract.js: 175.925 KM (Validado)</span>
+      </div>
+
+      <!-- Botão de Ação Direta -->
+      <button class="btn-reset-oil" onclick="confirmarTrocaOleo()">
+        <i class="ph ph-check-circle"></i> Confirmar Troca de Óleo e Zerar Contador
+      </button>
+    </div>
+  </div>
+
   <script>
-    function abrirDetalhes(nome, veiculo, status, tipo) {
+    function abrirDetalhes(nome, veiculo) {
       document.getElementById('popNome').innerText = nome;
       document.getElementById('popVeiculo').innerText = veiculo;
       document.getElementById('modalLocatario').style.display = 'flex';
     }
 
-    function fecharDetalhes() {
+    function abrirManutencao() {
       document.getElementById('modalLocatario').style.display = 'none';
+      document.getElementById('modalManutencao').style.display = 'flex';
+    }
+
+    function fecharModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function confirmarTrocaOleo() {
+      fecharModal('modalManutencao');
+      abrirDetalhes('Carlos Eduardo Silva', 'HONDA CG 160 START • PTM-3F56');
     }
   </script>
 </body>
