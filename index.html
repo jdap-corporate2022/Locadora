@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-    <!-- Script único de autenticação -->
+  <!-- Script único de autenticação -->
   <script src="auth.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -293,11 +293,6 @@
       margin: 4px 0;
     }
 
-    .days-count span {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
     .days-sub {
       font-size: 0.65rem;
       color: var(--accent-green);
@@ -313,9 +308,10 @@
 
     .progress-bar-fill {
       height: 100%;
-      width: 71%; /* 5 de 7 dias restantes */
+      width: 0%;
       background: var(--accent-green);
       border-radius: 4px;
+      transition: width 0.4s ease;
     }
 
     .amount-box {
@@ -529,7 +525,7 @@
 
     .oil-bar-fill {
       height: 100%;
-      width: 60%; /* 600km rodados de 1000km */
+      width: 60%;
       background: linear-gradient(90deg, var(--accent-yellow), #ff9100);
       border-radius: 5px;
       transition: width 0.5s ease;
@@ -726,7 +722,7 @@
           <div class="logo-sub">LOCADORA DE MOTOS</div>
         </div>
       </div>
-      <div class="icon-btn">
+      <div class="icon-btn" onclick="fazerLogout()" title="Sair do Sistema">
         <i class="ph ph-bell"></i>
         <div class="badge-dot"></div>
       </div>
@@ -738,7 +734,7 @@
         <img class="moto-img" src="img_honda.png" alt="Honda CG 160 Start" />
 
         <div class="badge-contract">
-          <span class="num">1/12</span>
+          <span class="num" id="badgeContrato">1/12</span>
           <span class="label">Contrato</span>
         </div>
 
@@ -775,16 +771,16 @@
         <div class="pay-grid">
           <div class="days-left-box">
             <div class="days-title">Faltam</div>
-            <div class="days-count">5 <span>Dias</span></div>
+            <div class="days-count" id="txtFaltamDias">--</div>
             <div class="days-sub">para o vencimento</div>
             <div class="progress-bar-bg">
-              <div class="progress-bar-fill"></div>
+              <div class="progress-bar-fill" id="barraDias"></div>
             </div>
           </div>
 
           <div class="amount-box">
             <i class="ph ph-coins amount-icon"></i>
-            <span class="amount-title">1ª Parcela • <strong>30/09/2026</strong></span>
+            <span class="amount-title"><span id="txtOrdinalSemana">1ª</span> Parcela • <strong id="txtDataVencimento">--/--/----</strong></span>
             <span class="amount-val">R$ 320,00</span>
             <span style="font-size: 0.6rem; color: var(--text-sub);">Valor do pagamento</span>
           </div>
@@ -800,17 +796,17 @@
         <div class="sum-item">
           <i class="ph ph-check-circle sum-icon green"></i>
           <span class="sum-label">Dias de atraso</span>
-          <span class="sum-value">0</span>
+          <span class="sum-value" id="txtDiasAtraso">0</span>
         </div>
         <div class="sum-item">
           <i class="ph ph-currency-circle-dollar sum-icon yellow"></i>
           <span class="sum-label">Multa por atraso</span>
-          <span class="sum-value">R$ 0,00</span>
+          <span class="sum-value" id="txtMultaAtraso">R$ 0,00</span>
         </div>
         <div class="sum-item">
           <i class="ph ph-calendar-blank sum-icon yellow"></i>
           <span class="sum-label">Total a pagar</span>
-          <span class="sum-value" style="color: var(--accent-yellow);">R$ 320,00</span>
+          <span class="sum-value" id="txtTotalPagar" style="color: var(--accent-yellow);">R$ 320,00</span>
         </div>
       </div>
 
@@ -1146,5 +1142,8 @@
       }
     }
   </script>
+
+  <!-- Motor de Cálculo Automático de Dias e Valores -->
+  <script src="app-engine.js"></script>
 </body>
 </html>
