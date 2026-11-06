@@ -976,7 +976,6 @@
           </div>
           <div class="pay-item">
             <div><strong>8ª Sem.</strong> - 18/11/2026</div>
-            <span class="status-badge" style="background: rgba(255,255,255,0.05); color: var(--text-sub);">R$ 320,00 (A vencer)</span>
     <!-- TAB 2: PAGAMENTOS -->
     <main id="tab-pagamentos" class="tab-view">
       <!-- Card Superior de Resumo Financeiro -->
@@ -996,12 +995,12 @@
           </div>
           <div>
             <span style="font-size: 0.6rem; color: var(--text-sub); display: block;">Valor Recebido</span>
-            <span style="font-size: 1rem; font-weight: 800; color: var(--accent-green);">R$ 1.400,00</span>
+            <span style="font-size: 1rem; font-weight: 800; color: var(--accent-green);">R$ 1.640,00 <span style="font-size: 0.55rem; font-weight: normal; color: var(--text-sub);">(42,71%)</span></span>
           </div>
         </div>
       </div>
 
-      <!-- Lista Detalhada das Parcelas (Lógica Contábil Correta) -->
+      <!-- Lista Detalhada das Parcelas -->
       <div class="card-rules">
         <div class="rules-header">
           <i class="ph ph-receipt"></i>
@@ -1009,22 +1008,22 @@
         </div>
         <div class="payment-history-list">
           
-          <!-- 1ª Semana: Parcial (Pago R$ 200 em espécie, restou R$ 120) -->
-          <div class="pay-item" style="flex-direction: column; align-items: stretch; gap: 6px; border-color: rgba(255, 184, 0, 0.4);">
+          <!-- 1ª Semana - Quitada -->
+          <div class="pay-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div><strong>1ª Sem.</strong> - 30/09/2026</div>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 0.75rem; font-weight: 700;">R$ 320,00</span>
-                <span class="status-badge pending">Parcial</span>
+                <span class="status-badge" style="background: rgba(0, 230, 118, 0.2); color: var(--accent-green);">Quitada</span>
               </div>
             </div>
             <div style="font-size: 0.62rem; color: var(--text-sub); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; display: flex; justify-content: space-between;">
-              <span>Recebido: R$ 200,00 (Espécie em 01/10)</span>
-              <span style="color: var(--accent-yellow);">Saldo Pendente: R$ 120,00</span>
+              <span>✓ Pago • Recebido em 01/10/2026</span>
+              <span style="color: var(--accent-green);">R$ 320,00</span>
             </div>
           </div>
 
-          <!-- 2ª Semana: Quitada com Excedente (Pix R$ 400 cobriu 320 + abateu parte da 1ª) -->
+          <!-- 2ª Semana - Quitada -->
           <div class="pay-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div><strong>2ª Sem.</strong> - 07/10/2026</div>
@@ -1034,53 +1033,51 @@
               </div>
             </div>
             <div style="font-size: 0.62rem; color: var(--text-sub); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; display: flex; justify-content: space-between;">
-              <span>Recebido: R$ 400,00 (Pix em 07/10)</span>
-              <span style="color: var(--accent-green);">Quitada (+R$ 80 excedente)</span>
+              <span>✓ Pago • Recebido em 07/10/2026</span>
+              <span style="color: var(--accent-green);">R$ 320,00</span>
             </div>
           </div>
 
-          <!-- 3ª Semana: Período crítico pós-acidente (R$ 0,00) -->
-          <div class="pay-item" style="flex-direction: column; align-items: stretch; gap: 6px; border-color: rgba(255, 59, 48, 0.3);">
+          <!-- 3ª Semana - Parcial -->
+          <div class="pay-item" style="flex-direction: column; align-items: stretch; gap: 6px; border-color: rgba(255, 184, 0, 0.4);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div><strong>3ª Sem.</strong> - 14/10/2026</div>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 0.75rem; font-weight: 700;">R$ 320,00</span>
-                <span class="status-badge" style="background: rgba(255, 59, 48, 0.2); color: #ff3b30;">Em atraso</span>
+                <span class="status-badge pending">Parcial</span>
               </div>
             </div>
             <div style="font-size: 0.62rem; color: var(--text-sub); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; display: flex; justify-content: space-between;">
-              <span>Recebido: R$ 0,00 (Período de acidente)</span>
-              <span style="color: #ff3b30;">Pendente: R$ 320,00</span>
+              <span>Recebido em 02/10/2026 (Espécie)</span>
+              <span style="color: var(--accent-yellow);">R$ 200,00 (Saldo: R$ 120,00)</span>
             </div>
           </div>
 
-          <!-- 4ª Semana: Pix de R$ 400 em 24/10 -->
+          <!-- 4ª Semana - Pendente -->
           <div class="pay-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div><strong>4ª Sem.</strong> - 21/10/2026</div>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 0.75rem; font-weight: 700;">R$ 320,00</span>
-                <span class="status-badge" style="background: rgba(0, 230, 118, 0.2); color: var(--accent-green);">Quitada</span>
+                <span class="status-badge" style="background: rgba(255, 59, 48, 0.2); color: #ff3b30;">Pendente</span>
               </div>
             </div>
-            <div style="font-size: 0.62rem; color: var(--text-sub); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; display: flex; justify-content: space-between;">
-              <span>Recebido: R$ 400,00 (Pix em 24/10)</span>
-              <span style="color: var(--accent-green);">Quitada (+R$ 80 excedente)</span>
+            <div style="font-size: 0.62rem; color: var(--text-sub); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px;">
+              ⚠️ Em atraso • Vencimento: 21/10/2026
             </div>
           </div>
 
-          <!-- 5ª Semana: Pix de R$ 400 em 31/10 -->
+          <!-- 5ª Semana - Pendente -->
           <div class="pay-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div><strong>5ª Sem.</strong> - 28/10/2026</div>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 0.75rem; font-weight: 700;">R$ 320,00</span>
-                <span class="status-badge" style="background: rgba(0, 230, 118, 0.2); color: var(--accent-green);">Quitada</span>
+                <span class="status-badge" style="background: rgba(255, 59, 48, 0.2); color: #ff3b30;">Pendente</span>
               </div>
             </div>
-            <div style="font-size: 0.62rem; color: var(--text-sub); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px; display: flex; justify-content: space-between;">
-              <span>Recebido: R$ 400,00 (Pix em 31/10)</span>
-              <span style="color: var(--accent-green);">Quitada (+R$ 80 excedente)</span>
+            <div style="font-size: 0.62rem; color: var(--text-sub); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px;">
+              ⚠️ Em atraso • Vencimento: 28/10/2026
             </div>
           </div>
 
@@ -1114,6 +1111,38 @@
             <span class="status-badge" style="background: rgba(255, 184, 0, 0.15); color: var(--accent-yellow);">Término do Aluguel</span>
           </div>
 
+        </div>
+      </div>
+
+      <!-- Histórico de Pagamentos & Saldo Devedor -->
+      <div class="card-rules">
+        <div class="rules-header">
+          <i class="ph ph-clock-counter-clockwise"></i>
+          <span>Histórico de Pagamentos Realizados</span>
+        </div>
+        <div style="font-size: 0.72rem; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="color: var(--text-sub);">01/10/2026 - Pix</span>
+            <strong style="color: var(--accent-green);">R$ 320,00</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="color: var(--text-sub);">02/10/2026 - Dinheiro (Espécie)</span>
+            <strong style="color: var(--accent-green);">R$ 200,00</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+            <span style="color: var(--text-sub);">07/10/2026 - Pix</span>
+            <strong style="color: var(--accent-green);">R$ 320,00</strong>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; background: rgba(255, 184, 0, 0.08); border: 1px solid rgba(255, 184, 0, 0.2); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <span style="font-size: 0.6rem; color: var(--text-sub); display: block;">Saldo Devedor Atual</span>
+            <span style="font-size: 1.1rem; font-weight: 900; color: var(--accent-yellow);">R$ 2.200,00</span>
+          </div>
+          <button class="btn-pay" style="width: auto; padding: 8px 14px; font-size: 0.75rem;">
+            <i class="ph ph-credit-card"></i> Registrar Pagamento
+          </button>
         </div>
       </div>
     </main>
